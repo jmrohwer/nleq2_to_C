@@ -2,19 +2,27 @@
 #include <math.h>
 #include "nleq2.h"
 
+// Function prototypes for auxiliary functions
+void zibconst(double* epmach, double* small);
+void decccon(double* a, int nrow, int ncol, int mcon, int m, int n, int* irankc, int* irank, double* cond,
+             double* d, int* pivot, int kred, double* ah, double* v, int* ierr);
+void solcon(double* a, int nrow, int ncol, int mcon, int m, int n, double* x, double* b, int irankc, int irank,
+            double* d, int* pivot, int kred, double* ah, double* v);
+
 // Numerical Jacobian approximation function
 void numerical_jacobian(int n, void (*fcn)(int*, double*, double*, int*), double* x, double* jac, double* fx, double eps) {
-    double temp, h, f1, f2;
+    double temp, h;
+    int ifail = 0;
     for (int j = 0; j < n; j++) {
         temp = x[j];
         h = eps * fabs(temp);
         if (h == 0.0) h = eps;
         x[j] = temp + h;
         h = x[j] - temp;
-        (*fcn)(&n, x, jac + j * n, &f1);
+        (*fcn)(&n, x, jac + j * n, &ifail);
         x[j] = temp - h;
         h = temp - x[j];
-        (*fcn)(&n, x, fx, &f2);
+        (*fcn)(&n, x, fx, &ifail);
         for (int i = 0; i < n; i++) {
             jac[i * n + j] = (jac[i * n + j] - fx[i]) / (2.0 * h);
         }

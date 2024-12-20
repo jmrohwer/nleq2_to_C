@@ -4,7 +4,7 @@
 void solcon(double* a, int nrow, int ncol, int mcon, int m, int n, double* x, double* b, int irankc, int irank,
             double* d, int* pivot, int kred, double* ah, double* v) {
     double zero = 0.0;
-    int i, ii, l1, l2;
+    int i, ii, l1, l2, j, j1, i1;
     double s, sh;
 
     if (irank == 0) {
